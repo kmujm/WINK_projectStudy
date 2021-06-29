@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>제목</th>
+                <th>내용</th>
+                <th>글쓴이</th>
+            </tr>
+        </thead>
+        <tbody class="content">
+
+        </tbody>
+    </table>
+    <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-database.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyAb7ALxnlg73ctdP6M9gZehwYARyhUZmcc",
+          authDomain: "jungmin-15ba6.firebaseapp.com",
+          databaseURL: "https://jungmin-15ba6-default-rtdb.firebaseio.com",
+          projectId: "jungmin-15ba6",
+          storageBucket: "jungmin-15ba6.appspot.com",
+          messagingSenderId: "464371102971",
+          appId: "1:464371102971:web:078f48b31d05dc719e2c5e"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        const database = firebase.database()
+
+        function writeNewPost(name, title, body) {
+            // A post entry.
+            var postData = {
+                name,
+                title,
+                body,
+            };
+
+            // Get a key for a new Post.
+            const newPostKey = firebase.database().ref().child('posts').push(postData)
+
+        }
+        function getPosts() { 
+            const postRef = firebase.database().ref('/posts/').once('value', function(snapshot){
+                const postData = Object.entries(snapshot.val())
+                let tableContent = document.querySelector('.content')
+               
+                for(let i =0; i< postData.length; i++) {
+                    const [key, body] = postData[i];
+                    tableContent.innerHTML += "<tr><td>" + body.title + "</td> <td>" + body.body + "</td> <td>" + body.name + "</td></tr>"
+                    console.log(key, body)
+                }
+            })
+            return ;
+        }
+
+        const postRef = firebase.database().ref('/posts/').on('value', function(snapshot){
+                const postData = Object.entries(snapshot.val())
+                let tableContent = document.querySelector('.content')
+                tableContent.innerHTML = ""
+                for(let i =0; i< postData.length; i++) {
+                    const [key, body] = postData[i];
+                    tableContent.innerHTML += "<tr><td>" + body.title + "</td> <td>" + body.body + "</td> <td>" + body.name + "</td></tr>"
+                    console.log(key, body)
+                }
+            })
+        console.log(database)
+      </script>
+</body>
+    
+</html>
